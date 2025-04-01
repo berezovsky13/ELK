@@ -1,0 +1,139 @@
+ELK Stack Installation Guide
+===========================
+
+Prerequisites:
+-------------
+1. Docker and Docker Compose installed on your system
+   For Windows:
+   - Install Docker Desktop from https://www.docker.com/products/docker-desktop
+   
+   For Ubuntu Linux:
+   - Install Docker:
+     sudo apt update
+     sudo apt install docker.io
+   - Install Docker Compose:
+     sudo apt install docker-compose
+   - Add your user to the docker group:
+     sudo usermod -aG docker $USER
+     # Log out and back in for the group changes to take effect
+
+2. Python 3.x installed
+   For Ubuntu Linux:
+   sudo apt install python3 python3-pip
+
+3. Git (optional, for cloning the repository)
+   For Ubuntu Linux:
+   sudo apt install git
+
+Step 1: Start Docker
+-------------------
+For Windows:
+1. Open Docker Desktop application
+2. Wait for it to fully start (you'll see the whale icon in your system tray)
+3. Make sure Docker is running by opening a terminal and typing:
+   docker --version
+
+For Ubuntu Linux:
+1. Start Docker service:
+   sudo systemctl start docker
+2. Enable Docker to start on boot:
+   sudo systemctl enable docker
+3. Verify Docker is running:
+   docker --version
+
+Step 2: Start the ELK Stack
+--------------------------
+1. Open a terminal in the project directory
+2. Run the following command to start all ELK components:
+   docker-compose up -d
+3. Wait a few minutes for all services to start properly
+
+Step 3: Install Python Dependencies
+---------------------------------
+1. In the same terminal, install the required Python packages:
+   pip install -r requirements.txt
+   # On Ubuntu, you might need to use:
+   pip3 install -r requirements.txt
+
+Step 4: Run the Sample Log Generator
+----------------------------------
+1. Start the log generator:
+   python sample_logs.py
+   # On Ubuntu, you might need to use:
+   python3 sample_logs.py
+2. The script will start sending sample logs to Logstash
+3. Keep this terminal window open while you're working with ELK
+
+Step 5: Access Kibana
+--------------------
+1. Open your web browser
+2. Go to http://localhost:5601
+3. When Kibana loads for the first time:
+   - Click "Explore on my own" or "Get started"
+   - Go to "Stack Management" in the left sidebar
+   - Click "Index Patterns"
+   - Click "Create index pattern"
+   - Enter "logstash-*" as the pattern
+   - Select "@timestamp" as the time field
+   - Click "Create index pattern"
+
+Step 6: Verify Everything is Working
+----------------------------------
+1. In Kibana, go to "Discover" in the left sidebar
+2. You should see logs appearing in real-time
+3. Each log entry should contain:
+   - timestamp
+   - user
+   - action
+   - status_code
+   - duration_ms
+   - host
+
+Troubleshooting:
+---------------
+1. If Docker containers aren't starting:
+   For Windows:
+   - Check if Docker Desktop is running
+   - Try restarting Docker Desktop
+   
+   For Ubuntu:
+   - Check Docker service status:
+     sudo systemctl status docker
+   - Restart Docker service:
+     sudo systemctl restart docker
+   
+   For both:
+   - Check the logs with: docker-compose logs
+
+2. If logs aren't appearing in Kibana:
+   - Make sure the log generator is running
+   - Check if Logstash is running: docker-compose ps
+   - Verify the index pattern is created correctly
+
+3. If you can't access Kibana:
+   - Make sure port 5601 isn't being used by another application
+   - Check if the Kibana container is running: docker-compose ps
+   - For Ubuntu, check if the port is open:
+     sudo ufw status
+
+Stopping the Stack:
+------------------
+1. To stop the log generator:
+   - Press Ctrl+C in the terminal where it's running
+
+2. To stop the ELK stack:
+   docker-compose down
+
+3. To stop Docker:
+   For Windows:
+   - Right-click the Docker icon in the system tray
+   - Select "Quit Docker Desktop"
+   
+   For Ubuntu:
+   - sudo systemctl stop docker
+
+Additional Resources:
+--------------------
+- Elastic Documentation: https://www.elastic.co/guide/index.html
+- Docker Documentation: https://docs.docker.com/
+- Kibana Guide: https://www.elastic.co/guide/en/kibana/current/index.html 
