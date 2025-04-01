@@ -1,5 +1,5 @@
-Kibana Visualization Guide
-========================
+Kibana Visualization Guide (Updated)
+=================================
 
 1. Start the ELK Stack
 ---------------------
@@ -8,31 +8,42 @@ Kibana Visualization Guide
 - Run: docker-compose up -d
 - Wait 30 seconds for all services to start
 
-2. Create Index Pattern
-----------------------
-- Open Kibana in your browser (http://localhost:5601)
-- Click "Stack Management" in the left sidebar
-- Click "Index Patterns"
-- Click "Create index pattern"
-- Enter "logs-*" as the pattern name
-- Click "Next step"
-- Select "@timestamp" as the time field
-- Click "Create index pattern"
-
-3. Generate Sample Logs
+2. Generate Sample Logs
 ----------------------
 - Open PowerShell
 - Navigate to your ELK directory
 - Run: python sample_logs.py
 - Keep this running in the background
 
-4. Create Visualizations
+3. Create Data View in Kibana
+---------------------------
+- Open Kibana in your browser (http://localhost:5601)
+- Click on "Data Views" in the left sidebar
+- Click "Create data view"
+- In the "Name" field, enter: logs-*
+- In the "Index pattern" field, enter: logs-*
+- Click "Next step"
+- In the "Time field" dropdown, select "@timestamp"
+- Click "Create data view"
+
+4. Verify Your Data
+------------------
+- After creating the data view:
+  * You should see a list of fields on the left side
+  * These fields should include: timestamp, user, action, status_code, duration_ms, host
+  * If you don't see these fields, wait a few minutes and refresh the page
+- To verify your data:
+  * Click "Discover" in the left sidebar
+  * In the data view dropdown at the top, select your "logs-*" view
+  * You should see your log entries appearing
+
+5. Create Visualizations
 -----------------------
 a) Status Code Distribution (Pie Chart):
    - Click "Visualize" in the left sidebar
    - Click "Create visualization"
    - Select "Pie" chart
-   - Select your "logs-*" index pattern
+   - Select your "logs-*" data view
    - In Metrics section:
      * Set "Aggregation" to "Count"
    - In Buckets section:
@@ -46,7 +57,7 @@ a) Status Code Distribution (Pie Chart):
 b) Response Time Trend (Line Chart):
    - Click "Create visualization"
    - Select "Line" chart
-   - Select your "logs-*" index pattern
+   - Select your "logs-*" data view
    - In Metrics section:
      * Set "Aggregation" to "Average"
      * Set "Field" to "duration_ms"
@@ -61,7 +72,7 @@ b) Response Time Trend (Line Chart):
 c) User Actions (Bar Chart):
    - Click "Create visualization"
    - Select "Bar" chart
-   - Select your "logs-*" index pattern
+   - Select your "logs-*" data view
    - In Metrics section:
      * Set "Aggregation" to "Count"
    - In Buckets section:
@@ -72,7 +83,7 @@ c) User Actions (Bar Chart):
    - Click "Apply changes"
    - Save as "User Actions"
 
-5. Create Dashboard
+6. Create Dashboard
 ------------------
 - Click "Dashboard" in the left sidebar
 - Click "Create new dashboard"
@@ -85,7 +96,7 @@ c) User Actions (Bar Chart):
   * Place User Actions bar chart at the bottom
 - Click "Save" and name your dashboard (e.g., "Application Logs Dashboard")
 
-6. Add Filters
+7. Add Filters
 -------------
 - Click "Add filter" at the top of your dashboard
 - You can add filters for:

@@ -28,21 +28,36 @@ def generate_log():
     return json.dumps(log_entry)
 
 def send_logs():
-    # Connect to Logstash
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect(('localhost', 5000))
+    print("Waiting for Logstash to be ready...")
+    time.sleep(10)  # Wait for Logstash to start
     
-    print("Sending logs to Logstash...")
-    try:
-        while True:
-            log = generate_log()
-            sock.send((log + '\n').encode())
-            print(f"Sent: {log}")
-            time.sleep(1)  # Send one log per second
-    except KeyboardInterrupt:
-        print("\nStopping log generation...")
-    finally:
-        sock.close()
+    while True:
+        try:
+            # Connect to Logstash
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect(('localhost', 5000))
+            
+            print("Connected to Logstash. Sending logs...")
+            while True:
+                log = generate_log()
+                sock.send((log + '\n').encode())
+                print(f"Sent: {log}")
+                time.sleep(1)  # Send one log per second
+                
+        except ConnectionRefusedError:
+            print("Could not connect to Logstash. Retrying in 5 seconds...")
+            time.sleep(5)
+        except ConnectionAbortedError:
+            print("Connection to Logstash was lost. Retrying in 5 seconds...")
+            time.sleep(5)
+        except KeyboardInterrupt:
+            print("\nStopping log generation...")
+            break
+        finally:
+            try:
+                sock.close()
+            except:
+                pass
 
 if __name__ == "__main__":
     send_logs() 
