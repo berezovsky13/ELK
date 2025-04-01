@@ -1,0 +1,106 @@
+Kibana Visualization Guide
+========================
+
+1. Start the ELK Stack
+---------------------
+- Open PowerShell
+- Navigate to your ELK directory
+- Run: docker-compose up -d
+- Wait 30 seconds for all services to start
+
+2. Create Index Pattern
+----------------------
+- Open Kibana in your browser (http://localhost:5601)
+- Click "Stack Management" in the left sidebar
+- Click "Index Patterns"
+- Click "Create index pattern"
+- Enter "logs-*" as the pattern name
+- Click "Next step"
+- Select "@timestamp" as the time field
+- Click "Create index pattern"
+
+3. Generate Sample Logs
+----------------------
+- Open PowerShell
+- Navigate to your ELK directory
+- Run: python sample_logs.py
+- Keep this running in the background
+
+4. Create Visualizations
+-----------------------
+a) Status Code Distribution (Pie Chart):
+   - Click "Visualize" in the left sidebar
+   - Click "Create visualization"
+   - Select "Pie" chart
+   - Select your "logs-*" index pattern
+   - In Metrics section:
+     * Set "Aggregation" to "Count"
+   - In Buckets section:
+     * Click "Add"
+     * Set "Aggregation" to "Terms"
+     * Set "Field" to "status_code"
+     * Set "Size" to 7
+   - Click "Apply changes"
+   - Save as "Status Code Distribution"
+
+b) Response Time Trend (Line Chart):
+   - Click "Create visualization"
+   - Select "Line" chart
+   - Select your "logs-*" index pattern
+   - In Metrics section:
+     * Set "Aggregation" to "Average"
+     * Set "Field" to "duration_ms"
+   - In Buckets section:
+     * Click "Add"
+     * Set "Aggregation" to "Date Histogram"
+     * Set "Field" to "@timestamp"
+     * Set "Interval" to "Auto"
+   - Click "Apply changes"
+   - Save as "Response Time Trend"
+
+c) User Actions (Bar Chart):
+   - Click "Create visualization"
+   - Select "Bar" chart
+   - Select your "logs-*" index pattern
+   - In Metrics section:
+     * Set "Aggregation" to "Count"
+   - In Buckets section:
+     * Click "Add"
+     * Set "Aggregation" to "Terms"
+     * Set "Field" to "action"
+     * Set "Size" to 5
+   - Click "Apply changes"
+   - Save as "User Actions"
+
+5. Create Dashboard
+------------------
+- Click "Dashboard" in the left sidebar
+- Click "Create new dashboard"
+- Click "Add from library"
+- Add all your saved visualizations
+- Arrange them in a layout that makes sense:
+  * Put Error Count metric at the top
+  * Place Status Code Distribution pie chart next to it
+  * Put Response Time Trend line chart below
+  * Place User Actions bar chart at the bottom
+- Click "Save" and name your dashboard (e.g., "Application Logs Dashboard")
+
+6. Add Filters
+-------------
+- Click "Add filter" at the top of your dashboard
+- You can add filters for:
+  * Time range (e.g., "Last 15 minutes")
+  * Status codes (e.g., "status_code >= 400")
+  * Specific users
+  * Specific actions
+
+Available Fields in Your Logs:
+----------------------------
+- timestamp: Time of the log entry
+- user: User performing the action
+- action: Type of action (login, logout, purchase, view_item, add_to_cart)
+- status_code: HTTP status code (200, 201, 400, 401, 403, 404, 500)
+- duration_ms: Response time in milliseconds
+- host: Hostname of the system
+
+Note: To stop the log generation script, press Ctrl+C in the PowerShell window where it's running. 
