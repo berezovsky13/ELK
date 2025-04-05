@@ -71,11 +71,23 @@ Go back to the main menu(You can click on "elastic" in the top left corner)
 -------------
 - Create a Donut using the same data from Task 6 and save the dashboard
 
-9.Add differet data 
+9. Add differet data 
 -------------
 - Inside the Python script modify the names you have to the names of some classmates
 - Run the script 
 - Create a dashboard that will show any data about your classmates
+
+10. DevTools
+-------------
+- Under "Management" go to "DevTools"
+- Inside the Console put the following:
+GET logs-*/_search
+{
+  "size": 1
+}
+
+- Look an the output and examine it
+** This is how you can query the ElasticSeach to check if you data is actually exists"
 
 
 Available Fields in Your Logs:
