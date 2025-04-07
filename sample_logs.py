@@ -27,37 +27,47 @@ def generate_log():
     
     return json.dumps(log_entry)
 
+def create_socket():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(5)
+    return sock
+
 def send_logs():
     print("Waiting for Logstash to be ready...")
     time.sleep(10)  # Wait for Logstash to start
     
     while True:
+        sock = None
         try:
-            # Connect to Logstash
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock = create_socket()
             sock.connect(('localhost', 5000))
-            
             print("Connected to Logstash. Sending logs...")
+            
             while True:
-                log = generate_log()
-                sock.send((log + '\n').encode())
-                print(f"Sent: {log}")
-                time.sleep(1)  # Send one log per second
+                try:
+                    log = generate_log()
+                    # Add newline and ensure proper encoding
+                    message = (log + '\n').encode('utf-8')
+                    sock.sendall(message)
+                    print(f"Sent: {log}")
+                    time.sleep(1)  # Send one log per second
+                except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError) as e:
+                    print(f"Connection error while sending: {e}")
+                    break
                 
-        except ConnectionRefusedError:
-            print("Could not connect to Logstash. Retrying in 5 seconds...")
-            time.sleep(5)
-        except ConnectionAbortedError:
-            print("Connection to Logstash was lost. Retrying in 5 seconds...")
+        except (ConnectionRefusedError, ConnectionResetError, ConnectionAbortedError, BrokenPipeError) as e:
+            print(f"Could not connect to Logstash: {e}")
+            print("Retrying in 5 seconds...")
             time.sleep(5)
         except KeyboardInterrupt:
             print("\nStopping log generation...")
             break
         finally:
-            try:
-                sock.close()
-            except:
-                pass
+            if sock:
+                try:
+                    sock.close()
+                except:
+                    pass
 
 if __name__ == "__main__":
     send_logs() 
