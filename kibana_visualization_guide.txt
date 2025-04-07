@@ -18,6 +18,7 @@ Kibana Visualization Guide (Updated)
 3. Create Data View in Kibana
 ---------------------------
 - Open Kibana in your browser (http://localhost:5601)
+- Go to "Stack Management"
 - Click on "Data Views" in the left sidebar
 - Click "Create data view"
 - In the "Name" field, enter: logs-*
@@ -28,73 +29,32 @@ Kibana Visualization Guide (Updated)
 
 4. Verify Your Data
 ------------------
-- After creating the data view:
-  * You should see a list of fields on the left side
-  * These fields should include: timestamp, user, action, status_code, duration_ms, host
-  * If you don't see these fields, wait a few minutes and refresh the page
+Go back to the main menu(You can click on "elastic" in the top left corner)
 - To verify your data:
   * Click "Discover" in the left sidebar
-  * In the data view dropdown at the top, select your "logs-*" view
+  * Click on "View all matches"
   * You should see your log entries appearing
 
 5. Create Visualizations
 -----------------------
-a) Status Code Distribution (Pie Chart):
-   - Click "Visualize" in the left sidebar
-   - Click "Create visualization"
-   - Select "Pie" chart
-   - Select your "logs-*" data view
-   - In Metrics section:
-     * Set "Aggregation" to "Count"
-   - In Buckets section:
-     * Click "Add"
-     * Set "Aggregation" to "Terms"
-     * Set "Field" to "status_code"
-     * Set "Size" to 7
-   - Click "Apply changes"
-   - Save as "Status Code Distribution"
+   Playing with Kibana:
+   - Go back to the main menu (You can click on "elastic" in the top left corner)
+   - Click "Visualize Library" in the left sidebar
+   - Click "Create new visualization"
+   - Select "Lens"
+   - Select "user.keyword"
+   ** Do not save for now **
 
-b) Response Time Trend (Line Chart):
-   - Click "Create visualization"
-   - Select "Line" chart
-   - Select your "logs-*" data view
-   - In Metrics section:
-     * Set "Aggregation" to "Average"
-     * Set "Field" to "duration_ms"
-   - In Buckets section:
-     * Click "Add"
-     * Set "Aggregation" to "Date Histogram"
-     * Set "Field" to "@timestamp"
-     * Set "Interval" to "Auto"
-   - Click "Apply changes"
-   - Save as "Response Time Trend"
-
-c) User Actions (Bar Chart):
-   - Click "Create visualization"
-   - Select "Bar" chart
-   - Select your "logs-*" data view
-   - In Metrics section:
-     * Set "Aggregation" to "Count"
-   - In Buckets section:
-     * Click "Add"
-     * Set "Aggregation" to "Terms"
-     * Set "Field" to "action"
-     * Set "Size" to 5
-   - Click "Apply changes"
-   - Save as "User Actions"
 
 6. Create Dashboard
 ------------------
-- Click "Dashboard" in the left sidebar
+- Go back to the main menu (You can click on "elastic" in the top left corner)
+- Click "Dashboards" in the left sidebar
 - Click "Create new dashboard"
-- Click "Add from library"
-- Add all your saved visualizations
-- Arrange them in a layout that makes sense:
-  * Put Error Count metric at the top
-  * Place Status Code Distribution pie chart next to it
-  * Put Response Time Trend line chart below
-  * Place User Actions bar chart at the bottom
-- Click "Save" and name your dashboard (e.g., "Application Logs Dashboard")
+- Click "Create visualization"
+- Take "action.keyword" and drop it on "Drop some fields here to start"
+- Save it, and check for your dashboards
+
 
 7. Add Filters
 -------------
@@ -104,6 +64,31 @@ c) User Actions (Bar Chart):
   * Status codes (e.g., "status_code >= 400")
   * Specific users
   * Specific actions
+- Put the time range on 15 minutes for status code -400
+- Create any dashboard you want from that data
+
+8. Donut
+-------------
+- Create a Donut using the same data from Task 6 and save the dashboard
+
+9. Add differet data 
+-------------
+- Inside the Python script modify the names you have to the names of some classmates
+- Run the script 
+- Create a dashboard that will show any data about your classmates
+
+10. DevTools
+-------------
+- Under "Management" go to "DevTools"
+- Inside the Console put the following:
+GET logs-*/_search
+{
+  "size": 1
+}
+
+- Look an the output and examine it
+** This is how you can query the ElasticSeach to check if you data is actually exists"
+
 
 Available Fields in Your Logs:
 ----------------------------
